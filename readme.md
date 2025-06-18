@@ -5,16 +5,17 @@
 1. [Préparer le matériel](#-1-préparer-le-matériel)
 2. [Installer Raspberry Pi OS](#-2-installer-raspberry-pi-os)
 3. [Connexion à distance (SSH)](#-3-connexion-à-distance-ssh)
-4. [Configuration réseau](#-4-configuration-réseau)
-5. [Installer Docker](#-5-installer-docker)
-6. [Installer Docker Compose](#-6-installer-docker-compose)
-7. [Organiser les services](#-7-organiser-les-services)
-8. [Mises à jour et maintenance](#-8-mises-à-jour-et-maintenance)
-9. [Sécuriser le Raspberry Pi](#-9-sécuriser-le-raspberry-pi)
-10. [Sauvegarder les données](#-10-sauvegarder-les-données)
-11. [Surveiller le système](#-11-surveiller-le-système)
-12. [Bonnes pratiques](#-12-bonnes-pratiques)
-13. [Ressources utiles](#-13-ressources-utiles)
+    - [3.1 Comprendre l’adressage IP local](#-31-comprendre-ladressage-ip-local)
+    - [3.2 Utiliser un nom de domaine dynamique (DuckDNS)](#-32-utiliser-un-nom-de-domaine-dynamique-duckdns)
+4. [Installer Docker](#-4-installer-docker)
+5. [Installer Docker Compose](#-5-installer-docker-compose)
+6. [Organiser les services](#-6-organiser-les-services)
+7. [Mises à jour et maintenance](#-7-mises-à-jour-et-maintenance)
+8. [Sécuriser le Raspberry Pi](#-8-sécuriser-le-raspberry-pi)
+9. [Sauvegarder les données](#-9-sauvegarder-les-données)
+10. [Surveiller le système](#-10-surveiller-le-système)
+11. [Bonnes pratiques](#-11-bonnes-pratiques)
+12. [Ressources utiles](#-12-ressources-utiles)
 
 ---
 
@@ -51,58 +52,35 @@ Télécharge le Raspberry Pi Imager :
 
 ## 🔐 3. Connexion à distance (SSH)
 
-Depuis un terminal :
-
-```bash
-ssh <pi_user>@<pi_ip_local>
-```
-
-``pi_user``: utilisateur que vous avez configurer avant de flasher la carte ssd
-
-``pi_ip_local``: IP de vorte rasberri oi en local
-
-Si ça échoue, utiliser l’adresse IP (`hostname -I` sur le Pi).
+Accéder à ton Raspberry Pi à distance est une étape clé. Voici tout ce qu’il faut comprendre et mettre en place pour une connexion stable, sécurisée et fiable.
 
 ---
 
-## 🌐 4. Configuration réseau
+### 🔍 3.1 Comprendre l’adressage IP local
 
-Attribuer une IP statique pour un accès réseau fiable.
-
-### 📌 Contexte : LAN, adressage IP et configuration statique
-
-Ton Raspberry Pi se connecte à un **réseau local (LAN)**, généralement via ta box Internet ou un routeur domestique.  
-Dans ce réseau local, chaque appareil se voit attribuer une **adresse IP privée** (typiquement de la forme `192.168.x.x`) afin de pouvoir communiquer avec les autres équipements.
-
-Par défaut, ton routeur utilise un système **DHCP** qui attribue dynamiquement une adresse IP à chaque appareil.  
-Cependant, cette IP peut changer à chaque redémarrage, ce qui complique l'accès distant (ex. SSH ou services web).
-
-Pour éviter cela, on configure une **IP statique**. Par exemple :
-
-- `192.168.1.100/24` : IP fixe de ton Raspberry Pi
-- `192.168.1.1` : passerelle (ta box)
-- `1.1.1.1` et `8.8.8.8` : serveurs DNS (Cloudflare et Google)
-
-> ⚠️ Choisis une IP **en dehors du pool DHCP** de ta box pour éviter tout conflit.
-
-### Modifier le fichier de configuration :
-
-```bash
-sudo nano /etc/dhcpcd.conf
-```
-
-Ajouter à la fin :
-
-```
-interface wlan0
-static ip_address=192.168.1.100/24
-static routers=192.168.1.1
-static domain_name_servers=1.1.1.1 8.8.8.8
-```
+- Lorsqu’il démarre, ton Raspberry Pi reçoit une **adresse IP locale temporaire** (ex. `192.168.1.54`) via **DHCP**.
+- Cette IP peut **changer régulièrement** (souvent toutes les 24h), ce qui rend les connexions instables.
+- Pour un usage régulier, tu peux :
+  - Soit configurer une **IP statique** (voir section 4),
+  - Soit utiliser un **nom de domaine dynamique**.
 
 ---
 
-## 🐳 5. Installer Docker
+### 🌐 3.2 Utiliser un nom de domaine dynamique (DuckDNS)
+
+Pour éviter les problèmes liés au changement d’IP publique (côté box), tu peux :
+
+1. Créer un nom de domaine gratuit avec [DuckDNS](https://www.duckdns.org)
+2. Mettre en place un script de mise à jour automatique (exécuté toutes les 5 min via `cron`)
+3. Rediriger les ports nécessaires dans ta box (port 22 pour SSH)
+
+> Exemple de connexion avec DuckDNS :
+```bash
+ssh pi@monpi.duckdns.org
+```
+
+
+## 🐳 4. Installer Docker
 
 ```bash
 curl -sSL https://get.docker.com | sh
@@ -123,7 +101,7 @@ docker run hello-world
 
 ---
 
-## ⚙️ 6. Installer Docker Compose
+## ⚙️ 5. Installer Docker Compose
 
 ```bash
 sudo apt install docker-compose -y
@@ -131,7 +109,7 @@ sudo apt install docker-compose -y
 
 ---
 
-## 📂 7. Organiser les services
+## 📂 6. Organiser les services
 
 Structure conseillée :
 
@@ -143,7 +121,7 @@ nano docker-compose.yml
 
 ---
 
-## 🔄 8. Mises à jour et maintenance
+## 🔄 7. Mises à jour et maintenance
 
 ```bash
 sudo apt update && sudo apt full-upgrade -y
@@ -153,7 +131,7 @@ sudo apt clean
 
 ---
 
-## 🔐 9. Sécuriser le Raspberry Pi
+## 🔐 8. Sécuriser le Raspberry Pi
 
 Changer mot de passe :
 
@@ -177,7 +155,7 @@ sudo ufw enable
 
 ---
 
-## 💾 10. Sauvegarder les données
+## 💾 9. Sauvegarder les données
 
 ### Avec `rsync` :
 
@@ -195,7 +173,7 @@ sudo dd if=/dev/sdX of=raspberry-backup.img bs=4M status=progress
 
 ---
 
-## 📊 11. Surveiller le système
+## 📊 10. Surveiller le système
 
 Vérifier température :
 
@@ -224,7 +202,7 @@ glances
 
 ---
 
-## ✅ 12. Bonnes pratiques
+## ✅ 11. Bonnes pratiques
 
 - Ne pas utiliser le compte root directement
 - Documenter chaque projet
@@ -234,7 +212,7 @@ glances
 
 ---
 
-## 🔗 13. Ressources utiles
+## 🔗 12. Ressources utiles
 
 - Documentation Raspberry Pi : [raspberrypi.com/documentation](https://www.raspberrypi.com/documentation/)
 - Forum d’entraide : [forums.raspberrypi.com](https://forums.raspberrypi.com)
