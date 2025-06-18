@@ -66,7 +66,7 @@ Accéder à ton Raspberry Pi à distance est une étape clé. Voici tout ce qu�
 
 ---
 
-### 🌐 3.2 Utiliser un nom de domaine dynamique avec DuckDNS
+### 🌐 3.2 Utiliser un nom de domaine dynamique (DuckDNS)
 
 Pour garantir un accès stable à ton Raspberry Pi depuis l’extérieur, même si ton IP publique change, DuckDNS est une solution gratuite et simple à mettre en place.
 
@@ -114,7 +114,7 @@ fi
 | `EMAIL="..."` | Adresse email pour envoyer une alerte en cas d’échec. |
 | `TOKEN="..."` | Token sécurisé fourni par DuckDNS. |
 | `DOMAIN="..."` | Ton sous-domaine DuckDNS. |
-| `echo url=...` | Envoie une requête HTTPS à DuckDNS pour mettre à jour l’IP publique. |
+| `echo url=... ` | Envoie une requête HTTPS à DuckDNS pour mettre à jour l’IP publique. |
 | `-o $LOG_FILE` | Enregistre la réponse dans un fichier log. |
 | `-K -` | Utilise l’entrée standard comme source des options `curl`. |
 | `grep -q "OK"` | Vérifie que la mise à jour a réussi. |
