@@ -161,11 +161,33 @@ chmod +x ~/duckdns/duck.sh
 crontab -e
 ```
 
-3. Ligne à ajouter (toutes les 5 min) :
+Voici une version améliorée et plus pédagogique de ta section :
+
+---
+
+### 🕒 3. Ajouter une tâche planifiée (toutes les 5 minutes)
+
+Pour que ton nom de domaine DuckDNS soit mis à jour automatiquement avec ton adresse IP actuelle, tu dois configurer une tâche planifiée (appelée *cron job*).
+
+👉 Voici la ligne à ajouter à ton fichier `crontab` pour exécuter le script `duck.sh` toutes les **5 minutes** :
 
 ```cron
 */5 * * * * ~/duckdns/duck.sh >/dev/null 2>&1
 ```
+
+#### 📌 Explication de chaque partie :
+
+* `*/5` : signifie "toutes les 5 minutes".
+* `* * *` : tous les jours, toutes les heures, tous les mois.
+* `~/duckdns/duck.sh` : chemin vers le script DuckDNS que tu veux exécuter.
+* `>/dev/null 2>&1` : permet de ne pas afficher les messages de sortie ni d'erreur (cela rend l'exécution silencieuse).
+
+> ✅ **Résultat :** ton Raspberry Pi mettra à jour ton adresse IP publique sur DuckDNS automatiquement toutes les 5 minutes, sans intervention de ta part.
+
+---
+
+Souhaites-tu que je t’ajoute aussi la commande pour modifier le `crontab` facilement ?
+
 
 ---
 
