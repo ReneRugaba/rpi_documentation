@@ -1,93 +1,123 @@
+
 # 📘 Guide Complet : Gérer un Raspberry Pi
 
 ## 📑 Sommaire
 
-1. [Préparer le matériel](#-1-préparer-le-matériel)
-2. [Installer Raspberry Pi OS](#-2-installer-raspberry-pi-os)
-3. [Connexion à distance (SSH)](#-3-connexion-à-distance-ssh)
-    - [3.1 Comprendre l’adressage IP local](#-31-comprendre-ladressage-ip-local)
-    - [3.2 Utiliser un nom de domaine dynamique (DuckDNS)](#-32-utiliser-un-nom-de-domaine-dynamique-duckdns)
-4. [Installer Docker](#-4-installer-docker)
-5. [Installer Docker Compose](#-5-installer-docker-compose)
-6. [Organiser les services](#-6-organiser-les-services)
-7. [Mises à jour et maintenance](#-7-mises-à-jour-et-maintenance)
-8. [Surveiller le système](#-8-surveiller-le-système)
-9. [Bonnes pratiques](#-9-bonnes-pratiques)
+1. [Préparer le matériel](#-1-préparer-le-matériel)  
+2. [Installer Raspberry Pi OS](#-2-installer-raspberry-pi-os)  
+3. [Connexion à distance (SSH)](#-3-connexion-à-distance-ssh)  
+   - [3.1 Comprendre l’adressage IP local](#-31-comprendre-ladressage-ip-local)  
+   - [3.2 Utiliser un nom de domaine dynamique (DuckDNS)](#-32-utiliser-un-nom-de-domaine-dynamique-duckdns)  
+   - [3.3 Ouvrir les ports nécessaires (Pare-feu UFW)](#-33-ouvrir-les-ports-nécessaires-pare-feu-ufw)  
+4. [Installer Docker](#-4-installer-docker)  
+5. [Installer Docker Compose](#-5-installer-docker-compose)  
+6. [Organiser les services](#-6-organiser-les-services)  
+7. [Mises à jour et maintenance](#-7-mises-à-jour-et-maintenance)  
+8. [Surveiller le système](#-8-surveiller-le-système)  
+9. [Bonnes pratiques](#-9-bonnes-pratiques)  
 10. [Ressources utiles](#-10-ressources-utiles)
 
 ---
 
 ## 🧰 1. Préparer le matériel
 
-Matériel nécessaire :
-- Un Raspberry Pi (modèle 3, 4 ou 5 recommandé)
-- Une carte microSD ≥ 16 Go (classe 10 minimum)
-- Une alimentation compatible
-- Un clavier, une souris et un écran (ou accès SSH)
-- Une connexion Internet (Wi-Fi ou Ethernet)
+Voici ce dont tu as besoin pour démarrer avec ton Raspberry Pi :
+
+- ✅ Un **Raspberry Pi** (modèle 3, 4 ou 5 recommandé pour de bonnes performances)
+- 💾 Une **carte microSD** de 16 Go minimum (classe 10 recommandée pour la rapidité)
+- 🔌 Une **alimentation** adaptée (officielle ou de qualité équivalente)
+- 🖥️ Un **écran**, un **clavier** et une **souris** (optionnels si tu utilises SSH)
+- 🌐 Une **connexion Internet**, en Wi-Fi ou Ethernet
+
+> 💡 Conseil : plus ta carte SD est rapide, plus ton Raspberry Pi sera réactif.
 
 ---
 
 ## 💽 2. Installer Raspberry Pi OS
 
-Télécharge le Raspberry Pi Imager :  
+### 🧩 Étape 1 – Télécharger et installer Raspberry Pi Imager
+
 ➡️ [https://www.raspberrypi.com/software/](https://www.raspberrypi.com/software/)
 
-### Étapes :
+Ce logiciel permet de flasher automatiquement le système sur ta carte microSD.
 
-1. Choisir l’exécutable adapté à ton système d’exploitation :
+---
+
+### 🛠️ Étape 2 – Configurer le système à installer
+
+1. Lance le Raspberry Pi Imager et choisis ton système :
    ![Choix de l'OS](./img/rpi_custom_etape1.png)
 
-2. Configurer les paramètres avant l’écriture (nom d’utilisateur, mot de passe, Wi-Fi, SSH) :
+2. Clique sur la roue dentée ⚙️ (ou appuie sur `Ctrl+Shift+X`) pour préconfigurer :
+   - nom d’utilisateur
+   - mot de passe
+   - Wi-Fi
+   - SSH
+
    ![Configuration utilisateur](./img/rpi_custom_jp.jpg)
 
-3. Insérer la carte SD dans le PC **avant** de lancer le flashage :
+3. Insère la carte microSD dans ton PC, puis lance le flashage :
    ![Flash de la carte](./img/rpi_cistom_lastpart.png)
 
-4. Insérer la carte SD dans le Raspberry Pi et démarrer.
+---
+
+### 🚀 Étape 3 – Premier démarrage
+
+Une fois l’écriture terminée :
+- Insère la carte dans le Raspberry Pi
+- Branche l’alimentation
+- Le système démarre automatiquement !
 
 ---
 
 ## 🔐 3. Connexion à distance (SSH)
 
-Accéder à ton Raspberry Pi à distance est une étape clé. Voici tout ce qu’il faut comprendre et mettre en place pour une connexion stable, sécurisée et fiable.
+L’objectif ici est de te connecter à ton Raspberry Pi sans écran ni clavier. On passe donc par SSH.
 
 ---
 
 ### 🔍 3.1 Comprendre l’adressage IP local
 
-- Lorsqu’il démarre, ton Raspberry Pi reçoit une **adresse IP locale temporaire** (ex. `192.168.1.54`) via **DHCP**.
-- Cette IP peut **changer régulièrement** (souvent toutes les 24h), ce qui rend les connexions instables.
-- Pour un usage régulier, tu peux :
-  - Soit configurer une **IP statique** (voir section 4),
-  - Soit utiliser un **nom de domaine dynamique**.
+- Ton Raspberry Pi reçoit une **adresse IP locale dynamique** via ton routeur (ex : `192.168.1.54`)
+- Cette IP peut changer → problématique pour une connexion stable
+
+Deux solutions :
+- 🔒 Configurer une **IP fixe**
+- 🌍 Utiliser un **nom de domaine dynamique** (voir ci-dessous)
 
 ---
 
 ### 🌐 3.2 Utiliser un nom de domaine dynamique (DuckDNS)
 
-Pour garantir un accès stable à ton Raspberry Pi depuis l’extérieur, même si ton IP publique change, DuckDNS est une solution gratuite et simple à mettre en place.
+Pour accéder à ton Raspberry Pi **depuis Internet**, même si ton IP publique change.
 
 ---
 
-#### 🦆 Étape 1 – Créer un nom de domaine gratuit sur [DuckDNS.org](https://www.duckdns.org)
+#### 🦆 Étape 1 – Créer ton compte DuckDNS
+
+1. Va sur [https://www.duckdns.org](https://www.duckdns.org)  
+2. Connecte-toi avec GitHub ou Google  
+3. Crée ton sous-domaine (`monpi.duckdns.org`)  
+4. Récupère ton **token d’authentification**
 
 ![duck dns](./img/Capture%20d’écran%202025-06-18%20182206.png)
 
-Une fois inscrit, tu obtiendras :
-- un **nom de domaine** du type `monpi.duckdns.org`
-- un **token personnel** pour authentifier les mises à jour
-
 ---
 
-#### 🛠️ Étape 2 – Créer un script de mise à jour automatique
+#### 🛠️ Étape 2 – Créer le script de mise à jour
 
-Crée un fichier `duck.sh` dans `~/duckdns/` :
+Crée un dossier et un script :
+
+```bash
+mkdir -p ~/duckdns
+nano ~/duckdns/duck.sh
+````
+
+Colle ce contenu :
 
 ```bash
 #!/bin/bash
 
-# Paramètres
 LOG_FILE=~/duckdns/duck.log
 EMAIL="ton.email@exemple.com"
 TOKEN="TON_TOKEN"
@@ -95,110 +125,115 @@ DOMAIN="ton-sous-domaine"
 
 echo url="https://www.duckdns.org/update?domains=$DOMAIN&token=$TOKEN&ip=" | curl -k -o $LOG_FILE -K -
 
-# Vérification de succès
 if ! grep -q "OK" "$LOG_FILE"; then
     echo "Échec de mise à jour DuckDNS pour $DOMAIN à $(date)" | mail -s "[ALERTE] Échec DuckDNS" $EMAIL
 fi
 ```
 
----
-
-#### 🧠 Explication du script
-
-| Ligne | Rôle |
-|-------|------|
-| `#!/bin/bash` | Indique que le fichier est un script Bash. |
-| `LOG_FILE=~/duckdns/duck.log` | Fichier où sera stockée la réponse de DuckDNS. |
-| `EMAIL="..."` | Adresse email pour envoyer une alerte en cas d’échec. |
-| `TOKEN="..."` | Token sécurisé fourni par DuckDNS. |
-| `DOMAIN="..."` | Ton sous-domaine DuckDNS. |
-| `echo url=... ` | Envoie une requête HTTPS à DuckDNS pour mettre à jour l’IP publique. |
-| `-o $LOG_FILE` | Enregistre la réponse dans un fichier log. |
-| `-K -` | Utilise l’entrée standard comme source des options `curl`. |
-| `grep -q "OK"` | Vérifie que la mise à jour a réussi. |
-| `mail -s ...` | Envoie un email si la mise à jour échoue. |
-
-> ℹ️ Laisser `ip=` vide permet à DuckDNS de détecter automatiquement l'IP publique.
+> ℹ️ Laisse `ip=` vide → DuckDNS détectera l’IP publique automatiquement.
 
 ---
 
-#### 📅 Étape 3 – Automatiser la mise à jour toutes les 5 minutes
+#### 🧠 Explication pédagogique du script
 
-Rends ton script exécutable :
+| Ligne          | Fonction                                   |                                    |
+| -------------- | ------------------------------------------ | ---------------------------------- |
+| `#!/bin/bash`  | Lance l'interpréteur bash                  |                                    |
+| `LOG_FILE=...` | Fichier log où sera enregistrée la réponse |                                    |
+| `EMAIL="..."`  | Adresse mail à alerter en cas d’échec      |                                    |
+| \`echo url=... | curl ...\`                                 | Envoie une requête HTTPS à DuckDNS |
+| `grep -q "OK"` | Vérifie si la mise à jour a réussi         |                                    |
+| `mail -s ...`  | Envoie un mail en cas d’erreur             |                                    |
+
+---
+
+#### 📅 Étape 3 – Planifier la mise à jour automatique
+
+1. Rends le script exécutable :
 
 ```bash
 chmod +x ~/duckdns/duck.sh
 ```
 
-Ajoute-le à la crontab :
+2. Ajoute-le à la crontab :
 
 ```bash
 crontab -e
 ```
 
-Ajoute la ligne suivante :
+3. Ligne à ajouter (toutes les 5 min) :
 
 ```cron
 */5 * * * * ~/duckdns/duck.sh >/dev/null 2>&1
 ```
 
-> ⏱️ Cette ligne exécute le script toutes les 5 minutes.  
-> `>/dev/null 2>&1` supprime les messages de sortie pour garder les logs propres.
+---
 
 ### 🛡️ 3.3 Ouvrir les ports nécessaires (Pare-feu UFW)
 
-Pour sécuriser ton Raspberry Pi tout en autorisant l'accès aux services essentiels, tu peux configurer un pare-feu avec **UFW (Uncomplicated Firewall)**.
+> UFW = **Uncomplicated Firewall** : un pare-feu simple à configurer.
 
 #### 🔧 Étapes de configuration
 
-1. **Installer UFW** :
+1. Installer UFW :
+
 ```bash
 sudo apt install ufw -y
 ```
-2. Autoriser les connexions SSH (sinon tu seras coupé de ta machine à distance !) :
+
+2. Autoriser SSH :
+
 ```bash
 sudo ufw allow ssh
 ```
 
-3. Autoriser les connexions HTTP et HTTPS (si vous en avez l'utilité, si non ignorer cette partie) : 
+3. (Optionnel) Autoriser HTTP et HTTPS :
 
 ```bash
-sudo ufw allow 80    # HTTP (port par défaut pour les sites non chiffrés)
-sudo ufw allow 443   # HTTPS (port pour les sites sécurisés)
+sudo ufw allow 80
+sudo ufw allow 443
 ```
+
 4. Activer UFW :
+
 ```bash
 sudo ufw enable
 ```
-permet d'activer la protection ufw après la configuration
 
-5. Vérifier l’état du pare-feu :
+5. Vérifier l’état :
+
 ```bash
 sudo ufw status
 ```
 
-🧠 Explication pédagogique
-| Port          | Usage                    | Pourquoi l’autoriser ?                                                                  |
-| ------------- | ------------------------ | --------------------------------------------------------------------------------------- |
-| `22` (SSH)    | Connexion à distance     | Pour pouvoir te connecter et administrer ton Raspberry Pi à distance.                   |
-| `80` (HTTP)   | Serveur web non sécurisé | Si tu héberges un site ou une API sans HTTPS.                                           |
-| `443` (HTTPS) | Serveur web sécurisé     | Indispensable pour les connexions chiffrées avec un certificat SSL (ex. Let’s Encrypt). |
+---
 
+#### 🧠 Explication des ports ouverts
+
+| Port | Service | Pourquoi ?                        |
+| ---- | ------- | --------------------------------- |
+| 22   | SSH     | Connexion à distance              |
+| 80   | HTTP    | Serveur web classique             |
+| 443  | HTTPS   | Site sécurisé avec certificat SSL |
+
+---
 
 ## 🐳 4. Installer Docker
+
+Docker permet de lancer des services sous forme de "conteneurs" isolés, très pratique sur Raspberry Pi.
 
 ```bash
 curl -sSL https://get.docker.com | sh
 sudo usermod -aG docker pi
 ```
 
-Redémarrer ensuite :
+Redémarre ton Pi :
 
 ```bash
 sudo reboot
 ```
 
-Tester :
+Teste l’installation :
 
 ```bash
 docker run hello-world
@@ -207,6 +242,8 @@ docker run hello-world
 ---
 
 ## ⚙️ 5. Installer Docker Compose
+
+Docker Compose permet de lancer plusieurs services avec un seul fichier `.yml`.
 
 ```bash
 sudo apt install docker-compose -y
@@ -224,9 +261,13 @@ cd ~/services/mon-service
 nano docker-compose.yml
 ```
 
+> 📁 Tu peux regrouper tous tes projets dans `~/services/` pour mieux t’organiser.
+
 ---
 
 ## 🔄 7. Mises à jour et maintenance
+
+À exécuter régulièrement pour maintenir ton système :
 
 ```bash
 sudo apt update && sudo apt full-upgrade -y
@@ -236,51 +277,30 @@ sudo apt clean
 
 ---
 
-
-
 ## 📊 8. Surveiller le système
 
-Vérifier température :
+Quelques commandes utiles :
+
+* 🌡️ Température :
 
 ```bash
 vcgencmd measure_temp
 ```
 
-RAM :
+* 🧠 Mémoire :
 
 ```bash
 free -h
 ```
 
-Processus :
+* ⚙️ Processus :
 
 ```bash
 htop
 ```
 
-Installer `glances` :
+* 📈 Outil complet :
 
 ```bash
-sudo apt install glances -y
-glances
+sudo apt install glances
 ```
-
----
-
-## ✅ 9. Bonnes pratiques
-
-- Ne pas utiliser le compte root directement
-- Documenter chaque projet
-- Sauvegarder régulièrement
-- Redémarrer de temps en temps
-- Surveiller espace disque : `df -h`
-
----
-
-## 🔗 10. Ressources utiles
-
-- Documentation Raspberry Pi : [raspberrypi.com/documentation](https://www.raspberrypi.com/documentation/)
-- Forum d’entraide : [forums.raspberrypi.com](https://forums.raspberrypi.com)
-- Tutoriels français : [framboise314.fr](https://www.framboise314.fr/)
-
----
