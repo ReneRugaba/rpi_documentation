@@ -105,7 +105,7 @@ fi
 
 ---
 
-#### 🧠 Explication pédagogique du script
+#### 🧠 Explication du script
 
 | Ligne | Rôle |
 |-------|------|
@@ -146,6 +146,46 @@ Ajoute la ligne suivante :
 
 > ⏱️ Cette ligne exécute le script toutes les 5 minutes.  
 > `>/dev/null 2>&1` supprime les messages de sortie pour garder les logs propres.
+
+### 🛡️ 3.3 Ouvrir les ports nécessaires (Pare-feu UFW)
+
+Pour sécuriser ton Raspberry Pi tout en autorisant l'accès aux services essentiels, tu peux configurer un pare-feu avec **UFW (Uncomplicated Firewall)**.
+
+#### 🔧 Étapes de configuration
+
+1. **Installer UFW** :
+```bash
+sudo apt install ufw -y
+```
+2. Autoriser les connexions SSH (sinon tu seras coupé de ta machine à distance !) :
+```bash
+sudo ufw allow ssh
+```
+
+3. Autoriser les connexions HTTP et HTTPS (si vous en avez l'utilité, si non ignorer cette partie) : 
+
+```bash
+sudo ufw allow 80    # HTTP (port par défaut pour les sites non chiffrés)
+sudo ufw allow 443   # HTTPS (port pour les sites sécurisés)
+```
+4. Activer UFW :
+```bash
+sudo ufw enable
+```
+permet d'activer la protection ufw après la configuration
+
+5. Vérifier l’état du pare-feu :
+```bash
+sudo ufw status
+```
+
+🧠 Explication pédagogique
+| Port          | Usage                    | Pourquoi l’autoriser ?                                                                  |
+| ------------- | ------------------------ | --------------------------------------------------------------------------------------- |
+| `22` (SSH)    | Connexion à distance     | Pour pouvoir te connecter et administrer ton Raspberry Pi à distance.                   |
+| `80` (HTTP)   | Serveur web non sécurisé | Si tu héberges un site ou une API sans HTTPS.                                           |
+| `443` (HTTPS) | Serveur web sécurisé     | Indispensable pour les connexions chiffrées avec un certificat SSL (ex. Let’s Encrypt). |
+
 
 ## 🐳 4. Installer Docker
 
@@ -198,49 +238,9 @@ sudo apt clean
 
 ---
 
-## 🔐 8. Sécuriser le Raspberry Pi
 
-Changer mot de passe :
 
-```bash
-passwd
-```
-
-Installer fail2ban :
-
-```bash
-sudo apt install fail2ban -y
-```
-
-Pare-feu (UFW) :
-
-```bash
-sudo apt install ufw -y
-sudo ufw allow ssh
-sudo ufw enable
-```
-
----
-
-## 💾 9. Sauvegarder les données
-
-### Avec `rsync` :
-
-```bash
-rsync -avz /home/pi user@ip_serveur:/sauvegarde/raspi/
-```
-
-### Image de la carte SD :
-
-Depuis un PC :
-
-```bash
-sudo dd if=/dev/sdX of=raspberry-backup.img bs=4M status=progress
-```
-
----
-
-## 📊 10. Surveiller le système
+## 📊 8. Surveiller le système
 
 Vérifier température :
 
@@ -269,7 +269,7 @@ glances
 
 ---
 
-## ✅ 11. Bonnes pratiques
+## ✅ 9. Bonnes pratiques
 
 - Ne pas utiliser le compte root directement
 - Documenter chaque projet
@@ -279,7 +279,7 @@ glances
 
 ---
 
-## 🔗 12. Ressources utiles
+## 🔗 10. Ressources utiles
 
 - Documentation Raspberry Pi : [raspberrypi.com/documentation](https://www.raspberrypi.com/documentation/)
 - Forum d’entraide : [forums.raspberrypi.com](https://forums.raspberrypi.com)
