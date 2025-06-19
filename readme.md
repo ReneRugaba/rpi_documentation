@@ -13,9 +13,7 @@
 5. [Installer Docker Compose](#-5-installer-docker-compose)  
 6. [Organiser les services](#-6-organiser-les-services)  
 7. [Mises à jour et maintenance](#-7-mises-à-jour-et-maintenance)  
-8. [Surveiller le système](#-8-surveiller-le-système)  
-9. [Bonnes pratiques](#-9-bonnes-pratiques)  
-10. [Ressources utiles](#-10-ressources-utiles)
+8. [Surveiller le système](#-8-surveiller-le-système)
 
 ---
 
@@ -141,7 +139,7 @@ fi
 | `#!/bin/bash`  | Lance l'interpréteur bash                  |                                    |
 | `LOG_FILE=...` | Fichier log où sera enregistrée la réponse |                                    |
 | `EMAIL="..."`  | Adresse mail à alerter en cas d’échec      |                                    |
-| \`echo url=... | curl ...\`                                 | Envoie une requête HTTPS à DuckDNS |
+| `echo url=...  curl ...`                                 | Envoie une requête HTTPS à DuckDNS |
 | `grep -q "OK"` | Vérifie si la mise à jour a réussi         |                                    |
 | `mail -s ...`  | Envoie un mail en cas d’erreur             |                                    |
 
