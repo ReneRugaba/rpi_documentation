@@ -11,11 +11,9 @@
 5. [Installer Docker Compose](#-5-installer-docker-compose)
 6. [Organiser les services](#-6-organiser-les-services)
 7. [Mises à jour et maintenance](#-7-mises-à-jour-et-maintenance)
-8. [Sécuriser le Raspberry Pi](#-8-sécuriser-le-raspberry-pi)
-9. [Sauvegarder les données](#-9-sauvegarder-les-données)
-10. [Surveiller le système](#-10-surveiller-le-système)
-11. [Bonnes pratiques](#-11-bonnes-pratiques)
-12. [Ressources utiles](#-12-ressources-utiles)
+8. [Surveiller le système](#-10-surveiller-le-système)
+9. [Bonnes pratiques](#-11-bonnes-pratiques)
+10. [Ressources utiles](#-12-ressources-utiles)
 
 ---
 
